@@ -1,0 +1,10 @@
+# Configuración centralizada del BFF (nombre de servicio en Eureka: "bff").
+# El BFF ya trae su propio application.yml completo como fallback si el
+# Config Server no está disponible al arrancar — acá solo se centraliza lo
+# que tiene sentido compartir/editar sin redeploy. Sumar más propiedades a
+# medida que el equipo las quiera mover del application.yml local a acá.
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}

@@ -1,0 +1,9 @@
+# Configuración centralizada de ms-alertas. Todavía no tiene cliente de
+# Eureka/Config en su pom.xml — hay que agregar spring-cloud-starter-config
+# y spring-cloud-starter-netflix-eureka-client ahí antes de que este archivo
+# tenga efecto. Mientras tanto queda solo el registro compartido en Eureka.
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}

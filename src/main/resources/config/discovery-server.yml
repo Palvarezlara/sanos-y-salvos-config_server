@@ -1,0 +1,32 @@
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: ${EUREKA_HOSTNAME:localhost}
+  client:
+    register-with-eureka: false   # el servidor no se registra como cliente de sí mismo
+    fetch-registry: false         # el servidor no consulta el registro
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    # Configuración para desarrollo — deshabilita auto-preservación
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 5000
+    renewal-percent-threshold: 0.5
+    response-cache-update-interval-ms: 3000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+
+info:
+  app:
+    name: Eureka Discovery Server
+    description: Sanos y Salvos Service Registry
+    version: 1.0.0

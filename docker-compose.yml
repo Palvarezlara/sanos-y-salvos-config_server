@@ -1,0 +1,20 @@
+services:
+  config-server:
+    build: .
+    container_name: sanos-config-server
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8888/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      - sanos-y-salvos-network
+
+networks:
+  sanos-y-salvos-network:
+    external: false
+    name: sanos-y-salvos-network

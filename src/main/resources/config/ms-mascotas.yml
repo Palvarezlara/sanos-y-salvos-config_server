@@ -1,9 +1,39 @@
-# Configuración centralizada de ms-mascotas. Todavía no tiene cliente de
-# Eureka/Config en su pom.xml — hay que agregar spring-cloud-starter-config
-# y spring-cloud-starter-netflix-eureka-client ahí antes de que este archivo
-# tenga efecto. Mientras tanto queda solo el registro compartido en Eureka.
+# Configuración real de ms-mascotas — mismo patrón que el proyecto anterior
+# (Ticketti/MS-FULLSTACK): el application.yml local del microservicio queda
+# reducido a spring.application.name + spring.config.import; TODO lo demás
+# vive acá. Sin esto, ms-mascotas no tiene puerto, Mongo ni Cognito
+# configurados — depende de que este servidor esté arriba.
+#
+# Los ${VAR} de abajo los resuelve ms-mascotas con su propio entorno si este
+# servidor no logra resolverlos (mismo mecanismo de dos pasos que usa
+# Ticketti: el .env de cada microservicio se lee vía docker-compose, no acá).
+
+server:
+  port: ${PORT:8082}
+
+spring:
+  application:
+    name: ms-mascotas
+  mongodb:
+    uri: ${MONGODB_URI}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${COGNITO_ISSUER_URI}
+          jwk-set-uri: ${COGNITO_JWK_SET_URI}
 
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
+    status-page-url-path: /actuator/health
+    health-check-url-path: /actuator/health
+
+cognito:
+  client-id: ${COGNITO_CLIENT_ID}

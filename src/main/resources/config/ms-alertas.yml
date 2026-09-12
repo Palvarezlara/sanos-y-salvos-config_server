@@ -1,9 +1,65 @@
-# Configuración centralizada de ms-alertas. Todavía no tiene cliente de
-# Eureka/Config en su pom.xml — hay que agregar spring-cloud-starter-config
-# y spring-cloud-starter-netflix-eureka-client ahí antes de que este archivo
-# tenga efecto. Mientras tanto queda solo el registro compartido en Eureka.
+# Configuración real de ms-alertas — mismo patrón que el proyecto anterior
+# (Ticketti/MS-FULLSTACK): el application.yml local del microservicio queda
+# reducido a spring.application.name + spring.config.import; TODO lo demás
+# vive acá.
+#
+# ms-alertas ya pasa DB_URL/DB_USER/DB_PASSWORD, MAIL_*, COGNITO_*,
+# EUREKA_CLIENT_SERVICEURL_DEFAULTZONE y CONFIG_SERVER_URL como variables de
+# entorno reales del contenedor (ver su docker-compose.yml) — ese mecanismo
+# no cambia, solo se centraliza acá el mapeo de esas variables a properties
+# de Spring.
+
+server:
+  port: ${PORT:8083}
+
+spring:
+  application:
+    name: ms-alertas
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/alertas_db}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://cognito-idp.${cognito.region}.amazonaws.com/${cognito.user-pool-id}
+          jwk-set-uri: https://cognito-idp.${cognito.region}.amazonaws.com/${cognito.user-pool-id}/.well-known/jwks.json
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
+    status-page-url-path: /actuator/health
+    health-check-url-path: /actuator/health
+
+cognito:
+  region: ${COGNITO_REGION:us-east-1}
+  user-pool-id: ${COGNITO_USER_POOL_ID}
+  client-id: ${COGNITO_CLIENT_ID}
+
+contacto:
+  remitente: ${CONTACTO_REMITENTE:${spring.mail.username}}
+
+ms-mascotas:
+  base-url: ${MS_MASCOTAS_BASE_URL:http://localhost:8082}

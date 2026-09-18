@@ -38,7 +38,6 @@ eureka:
 cognito:
   client-id: ${COGNITO_CLIENT_ID}
 
-# ###################################
 # el indicador de salud de Mongo hace un comando de diagnostico contra la
 # base "local", y el usuario de Atlas no tiene permiso ahi (normal en Atlas)
 # -> el health quedaba DOWN aunque la conexion real a la base sanos_salvos
@@ -49,4 +48,3 @@ management:
       enabled: false
     mongodb:
       enabled: false
-# ###################################

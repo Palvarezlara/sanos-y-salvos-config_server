@@ -13,6 +13,8 @@ services:
       start_period: 30s
     networks:
       - sanos-y-salvos-network
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
 
 networks:
   sanos-y-salvos-network:

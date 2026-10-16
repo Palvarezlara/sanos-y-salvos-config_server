@@ -22,6 +22,19 @@ spring:
         jwt:
           issuer-uri: ${COGNITO_ISSUER_URI}
           jwk-set-uri: ${COGNITO_JWK_SET_URI}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    listener:
+      simple:
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 2000
+          multiplier: 2
 
 eureka:
   client:

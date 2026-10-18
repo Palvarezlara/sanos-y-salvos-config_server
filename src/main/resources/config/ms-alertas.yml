@@ -40,19 +40,6 @@ spring:
           auth: true
           starttls:
             enable: true
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
-    listener:
-      simple:
-        default-requeue-rejected: false # agotados los reintentos, cae en la cola de fallidos (no se reencola infinito)
-        retry:
-          enabled: true
-          max-attempts: 3
-          initial-interval: 2000
-          multiplier: 2
 
 eureka:
   client:

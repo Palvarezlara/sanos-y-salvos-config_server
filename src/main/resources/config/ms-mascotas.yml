@@ -26,17 +26,32 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
     registry-fetch-interval-seconds: 5
   instance:
     prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: ${EUREKA_LEASE_RENEWAL:5}
+    lease-expiration-duration-in-seconds: ${EUREKA_LEASE_EXPIRATION:15}
     status-page-url-path: /actuator/health
     health-check-url-path: /actuator/health
 
 cognito:
   client-id: ${COGNITO_CLIENT_ID}
+
+# Secreto de servicio que deben mandar ms-alertas y ms-chat a /internal/** (X-Internal-Token, minimo 32 caracteres;
+# sin el, esos endpoints rechazan toda llamada)
+internal:
+  api-token: ${INTERNAL_API_TOKEN:}
+
+# Fotos: bucket de S3 (en local sin credenciales la subida falla; reportar sin foto funciona)
+aws:
+  region: ${AWS_REGION}
+  endpoint-override: ${AWS_ENDPOINT_OVERRIDE:}
+  s3:
+    bucket-name: ${AWS_S3_BUCKET_NAME}
+    region: ${AWS_S3_REGION:us-east-1}
+  sns:
+    topic-arn: ${AWS_SNS_TOPIC_ARN}
 
 # el indicador de salud de Mongo hace un comando de diagnostico contra la
 # base "local", y el usuario de Atlas no tiene permiso ahi (normal en Atlas)

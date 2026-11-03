@@ -10,10 +10,12 @@ eureka:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
   server:
-    # Configuración para desarrollo — deshabilita auto-preservación
-    enable-self-preservation: false
-    eviction-interval-timer-in-ms: 5000
-    renewal-percent-threshold: 0.5
+    # Por defecto, valores de desarrollo (los servicios caidos desaparecen rapido del registro). En AWS
+    # un microcorte no debe expulsar instancias sanas: definir EUREKA_SELF_PRESERVATION=true y los
+    # demas tiempos (el umbral y el lease de los clientes tambien se pueden ajustar por entorno).
+    enable-self-preservation: ${EUREKA_SELF_PRESERVATION:false}
+    eviction-interval-timer-in-ms: ${EUREKA_EVICTION_INTERVAL_MS:5000}
+    renewal-percent-threshold: ${EUREKA_RENEWAL_PERCENT_THRESHOLD:0.5}
     response-cache-update-interval-ms: 3000
 
 management:
@@ -23,7 +25,7 @@ management:
         include: health, info
   endpoint:
     health:
-      show-details: always
+      show-details: when-authorized
 
 info:
   app:

@@ -23,25 +23,30 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
     registry-fetch-interval-seconds: 5
   instance:
     prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: ${EUREKA_LEASE_RENEWAL:5}
+    lease-expiration-duration-in-seconds: ${EUREKA_LEASE_EXPIRATION:15}
     status-page-url-path: /actuator/health
     health-check-url-path: /actuator/health
 
 cognito:
   client-id: ${COGNITO_CLIENT_ID}
 
+# Secreto de servicio para /internal/** de ms-mascotas (header X-Internal-Token, minimo 32 caracteres)
+internal:
+  api-token: ${INTERNAL_API_TOKEN:}
+
 chat:
   # clave compartida con el bff para el ticket del WebSocket (mínimo 32 caracteres; sin ella se rechaza toda conexión)
   ticket-secret: ${CHAT_TICKET_SECRET:}
-  allowed-origins: ${CHAT_ALLOWED_ORIGINS:http://localhost:5173}
+  # sin valor por defecto: el origen permitido depende del entorno (Vercel en AWS, localhost en desarrollo)
+  allowed-origins: ${CHAT_ALLOWED_ORIGINS}
   # cuánto se conservan los mensajes: índice TTL en Mongo (privacidad, Ley 21.719)
   retencion: ${CHAT_RETENCION:90d}
-  mascotas-base-url: ${MS_MASCOTAS_BASE_URL:http://ms-mascotas:8082}
+  mascotas-base-url: ${MS_MASCOTAS_BASE_URL}
   # como máximo un aviso por correo cada tanto en una misma conversación (para no llenar la bandeja)
   aviso-intervalo: ${CHAT_AVISO_INTERVALO:30m}
 

@@ -42,6 +42,16 @@ chat:
   # cuánto se conservan los mensajes: índice TTL en Mongo (privacidad, Ley 21.719)
   retencion: ${CHAT_RETENCION:90d}
   mascotas-base-url: ${MS_MASCOTAS_BASE_URL:http://ms-mascotas:8082}
+  # como máximo un aviso por correo cada tanto en una misma conversación (para no llenar la bandeja)
+  aviso-intervalo: ${CHAT_AVISO_INTERVALO:30m}
+
+# Aviso de mensaje nuevo: ms-chat publica en el topic SNS y ms-alertas manda el correo.
+# Sin topic configurado el chat funciona igual, solo sin avisos por correo.
+aws:
+  region: ${AWS_REGION:us-east-1}
+  endpoint-override: ${AWS_ENDPOINT_OVERRIDE:}
+  sns:
+    topic-arn: ${AWS_SNS_TOPIC_ARN:}
 
 # el indicador de salud de Mongo consulta la base "local", donde el usuario de Atlas no tiene
 # permiso (normal en Atlas): daba DOWN aunque la conexión real funcione (mismo caso que ms-mascotas)

@@ -1,0 +1,53 @@
+# Configuración real de ms-chat — mismo patrón que ms-mascotas y ms-alertas:
+# el application.yml local del microservicio queda reducido a spring.application.name +
+# spring.config.import; TODO lo demás vive acá.
+#
+# Los ${VAR} los resuelve ms-chat con el entorno de su propio contenedor (docker-compose).
+
+server:
+  port: ${PORT:8084}
+
+spring:
+  application:
+    name: ms-chat
+  mongodb:
+    # base propia (una BD por microservicio): misma URI del cluster de Atlas, terminada en /sanos_chat
+    uri: ${MONGODB_URI}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${COGNITO_ISSUER_URI}
+          jwk-set-uri: ${COGNITO_JWK_SET_URI}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
+    status-page-url-path: /actuator/health
+    health-check-url-path: /actuator/health
+
+cognito:
+  client-id: ${COGNITO_CLIENT_ID}
+
+chat:
+  # clave compartida con el bff para el ticket del WebSocket (mínimo 32 caracteres; sin ella se rechaza toda conexión)
+  ticket-secret: ${CHAT_TICKET_SECRET:}
+  allowed-origins: ${CHAT_ALLOWED_ORIGINS:http://localhost:5173}
+  # cuánto se conservan los mensajes: índice TTL en Mongo (privacidad, Ley 21.719)
+  retencion: ${CHAT_RETENCION:90d}
+  mascotas-base-url: ${MS_MASCOTAS_BASE_URL:http://ms-mascotas:8082}
+
+# el indicador de salud de Mongo consulta la base "local", donde el usuario de Atlas no tiene
+# permiso (normal en Atlas): daba DOWN aunque la conexión real funcione (mismo caso que ms-mascotas)
+management:
+  health:
+    mongo:
+      enabled: false
+    mongodb:
+      enabled: false

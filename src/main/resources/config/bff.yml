@@ -32,6 +32,11 @@ cognito:
 
 # Ticket de un solo uso para abrir el WebSocket del chat directo contra ms-chat
 # (POST /api/v1/chat/ticket). Sin secreto o sin URL el endpoint responde 503.
+# Secreto de servicio: el bff lo manda junto con los headers de identidad (X-User-Id / X-User-Email) para que
+# los microservicios, en especial ms-chat, confien en ellos. Vacio = no se manda.
+internal:
+  api-token: ${INTERNAL_API_TOKEN:}
+
 chat:
   ticket-secret: ${CHAT_TICKET_SECRET:}
   ws-url: ${CHAT_WS_URL:}

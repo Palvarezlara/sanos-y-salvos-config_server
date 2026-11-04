@@ -49,6 +49,18 @@ chat:
   mascotas-base-url: ${MS_MASCOTAS_BASE_URL}
   # como máximo un aviso por correo cada tanto en una misma conversación (para no llenar la bandeja)
   aviso-intervalo: ${CHAT_AVISO_INTERVALO:30m}
+  # limites de uso del REST (por usuario): peticiones por minuto y conversaciones nuevas por dia
+  limite-rest-por-minuto: ${CHAT_LIMITE_REST_POR_MINUTO:60}
+  limite-conversaciones-por-dia: ${CHAT_LIMITE_CONVERSACIONES_POR_DIA:20}
+  # el ticket solo autoriza el apreton de manos: el socket se cierra a esta edad (el cliente reconecta con un
+  # ticket nuevo) y si no llega ningun marco, ni ping, en este tiempo
+  ws-vida-maxima-minutos: ${CHAT_WS_VIDA_MAXIMA_MINUTOS:30}
+  ws-inactividad-segundos: ${CHAT_WS_INACTIVIDAD_SEGUNDOS:120}
+
+# Reportes eliminados en ms-mascotas: ms-chat consume "mascota.eliminada" y borra sus conversaciones.
+# Cola opcional: sin URL ese consumidor queda apagado y el chat arranca igual.
+sqs:
+  cola-mascota-eliminada-url: ${SQS_COLA_MASCOTA_ELIMINADA_URL:}
 
 # Aviso de mensaje nuevo: ms-chat publica en el topic SNS y ms-alertas manda el correo.
 # Sin topic configurado el chat funciona igual, solo sin avisos por correo.

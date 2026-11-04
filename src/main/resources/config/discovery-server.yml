@@ -3,7 +3,8 @@ server:
 
 eureka:
   instance:
-    hostname: ${EUREKA_HOSTNAME:localhost}
+    # sin valor por defecto: en AWS localhost haria que los clientes se registren contra si mismos
+    hostname: ${EUREKA_HOSTNAME}
   client:
     register-with-eureka: false   # el servidor no se registra como cliente de sí mismo
     fetch-registry: false         # el servidor no consulta el registro
@@ -17,6 +18,13 @@ eureka:
     eviction-interval-timer-in-ms: ${EUREKA_EVICTION_INTERVAL_MS:5000}
     renewal-percent-threshold: ${EUREKA_RENEWAL_PERCENT_THRESHOLD:0.5}
     response-cache-update-interval-ms: 3000
+
+# Autenticacion basica del registro (SecurityConfig de discovery-server). Con la clave vacia queda abierto
+# (solo desarrollo local); los clientes la mandan en la URL del registro.
+discovery:
+  auth:
+    user: ${EUREKA_AUTH_USER:eureka}
+    password: ${EUREKA_AUTH_PASSWORD:}
 
 management:
   endpoints:

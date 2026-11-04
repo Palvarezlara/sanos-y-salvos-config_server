@@ -64,6 +64,11 @@ cognito:
 
 contacto:
   remitente: ${CONTACTO_REMITENTE:${spring.mail.username}}
+  # limite de uso de POST /contactos (publico): intentos por ventana, por reporte y por correo de quien contacta
+  limite:
+    max-por-mascota: ${CONTACTO_MAX_POR_MASCOTA:10}
+    max-por-correo: ${CONTACTO_MAX_POR_CORREO:5}
+    ventana-minutos: ${CONTACTO_VENTANA_MINUTOS:60}
 
 ms-mascotas:
   # sin valor por defecto: en un contenedor localhost apunta al propio servicio
@@ -87,7 +92,9 @@ sqs:
   cola-contacto-url: ${SQS_COLA_CONTACTO_URL}
   cola-mascota-reportada-url: ${SQS_COLA_MASCOTA_REPORTADA_URL}
   cola-mascota-reunificada-url: ${SQS_COLA_MASCOTA_REUNIFICADA_URL}
-  cola-chat-aviso-url: ${SQS_COLA_CHAT_AVISO_URL}
+  # las dos ultimas son opcionales: sin URL ese consumidor queda apagado y el servicio arranca igual
+  cola-chat-aviso-url: ${SQS_COLA_CHAT_AVISO_URL:}
+  cola-mascota-eliminada-url: ${SQS_COLA_MASCOTA_ELIMINADA_URL:}
 
 # sin credenciales reales de Gmail el chequeo de salud del correo siempre
 # falla y deja /actuator/health en DOWN aunque el resto funcione bien

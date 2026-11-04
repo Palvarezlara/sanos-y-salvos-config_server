@@ -16,18 +16,14 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
 
 servicios:
   rutas:
     mascotas: ms-mascotas:8082 # nombre en eureka (puerto explicito: en docker el contenedor no escucha en :80)
     alertas: ms-alertas:8083
-    usuarios: ms-usuarios
     contactos: ms-alertas:8083 # mismo microservicio que alertas
     chat: ms-chat:8084 # REST del chat (historial, conversaciones); el WebSocket NO pasa por el bff, ver chat.ws-url
-
-bff:
-  retry-after: 5
 
 cognito:
   region: ${COGNITO_REGION:us-east-1}
@@ -36,6 +32,11 @@ cognito:
 
 # Ticket de un solo uso para abrir el WebSocket del chat directo contra ms-chat
 # (POST /api/v1/chat/ticket). Sin secreto o sin URL el endpoint responde 503.
+# Secreto de servicio: el bff lo manda junto con los headers de identidad (X-User-Id / X-User-Email) para que
+# los microservicios, en especial ms-chat, confien en ellos. Vacio = no se manda.
+internal:
+  api-token: ${INTERNAL_API_TOKEN:}
+
 chat:
   ticket-secret: ${CHAT_TICKET_SECRET:}
   ws-url: ${CHAT_WS_URL:}

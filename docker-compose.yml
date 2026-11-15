@@ -4,17 +4,16 @@ services:
     container_name: sanos-config-server
     restart: unless-stopped
     ports:
-      - "8888:8888"
-    healthcheck:
-      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/8888' || exit 1"]
-      interval: 15s
-      timeout: 10s
-      retries: 10
-      start_period: 30s
+      # solo la maquina local: los demas servicios entran por la red de Docker
+      - "127.0.0.1:8888:8888"
+    # el healthcheck (HTTP contra /actuator/health) viene definido en el Dockerfile
     networks:
       - sanos-y-salvos-network
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      # vacio = servidor abierto (solo desarrollo local). Si se define, cada cliente debe llevar
+      # SPRING_CLOUD_CONFIG_USERNAME y SPRING_CLOUD_CONFIG_PASSWORD con los mismos valores.
+      CONFIG_SERVER_AUTH_USER: ${CONFIG_SERVER_AUTH_USER:-config}
+      CONFIG_SERVER_AUTH_PASSWORD: ${CONFIG_SERVER_AUTH_PASSWORD:-}
 
 networks:
   sanos-y-salvos-network:

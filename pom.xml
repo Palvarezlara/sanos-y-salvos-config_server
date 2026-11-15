@@ -59,11 +59,10 @@
 			<artifactId>spring-cloud-config-server</artifactId>
 		</dependency>
 
-		<!-- Cliente Eureka: para que config-server tambien se registre y
-		     aparezca en el dashboard de discovery-server -->
+		<!-- Autenticacion basica opcional del servidor (ver SecurityConfig) -->
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
 		<!-- Actuator -->

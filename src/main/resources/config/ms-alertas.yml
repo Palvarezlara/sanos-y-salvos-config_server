@@ -16,12 +16,15 @@ spring:
   application:
     name: ms-alertas
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/alertas_db}
-    username: ${DB_USER:root}
-    password: ${DB_PASSWORD:}
+    # sin valores por defecto: si falta el secreto el servicio debe fallar al arrancar, no entrar como root sin clave
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      # 'update' deja que la aplicacion modifique sola el esquema: valido en desarrollo; en AWS usar
+      # JPA_DDL_AUTO=validate (o none) y migrar el esquema con Flyway/Liquibase
+      ddl-auto: ${JPA_DDL_AUTO:update}
     show-sql: false
   security:
     oauth2:
@@ -44,12 +47,13 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
     registry-fetch-interval-seconds: 5
   instance:
     prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 5
-    lease-expiration-duration-in-seconds: 15
+    # desarrollo: 5 s / 15 s. En AWS usar EUREKA_LEASE_EXPIRATION=30 a 90 junto con la auto-preservacion
+    lease-renewal-interval-in-seconds: ${EUREKA_LEASE_RENEWAL:5}
+    lease-expiration-duration-in-seconds: ${EUREKA_LEASE_EXPIRATION:15}
     status-page-url-path: /actuator/health
     health-check-url-path: /actuator/health
 
@@ -60,9 +64,37 @@ cognito:
 
 contacto:
   remitente: ${CONTACTO_REMITENTE:${spring.mail.username}}
+  # limite de uso de POST /contactos (publico): intentos por ventana, por reporte y por correo de quien contacta
+  limite:
+    max-por-mascota: ${CONTACTO_MAX_POR_MASCOTA:10}
+    max-por-correo: ${CONTACTO_MAX_POR_CORREO:5}
+    ventana-minutos: ${CONTACTO_VENTANA_MINUTOS:60}
 
 ms-mascotas:
-  base-url: ${MS_MASCOTAS_BASE_URL:http://localhost:8082}
+  # sin valor por defecto: en un contenedor localhost apunta al propio servicio
+  base-url: ${MS_MASCOTAS_BASE_URL}
+
+# Secreto de servicio para /internal/** de ms-mascotas (header X-Internal-Token, minimo 32 caracteres)
+internal:
+  api-token: ${INTERNAL_API_TOKEN:}
+
+frontend:
+  url: ${FRONTEND_URL}
+
+# Mensajeria SNS/SQS (en local, LocalStack: AWS_ENDPOINT_OVERRIDE)
+aws:
+  region: ${AWS_REGION}
+  endpoint-override: ${AWS_ENDPOINT_OVERRIDE:}
+  sns:
+    topic-arn: ${AWS_SNS_TOPIC_ARN}
+
+sqs:
+  cola-contacto-url: ${SQS_COLA_CONTACTO_URL}
+  cola-mascota-reportada-url: ${SQS_COLA_MASCOTA_REPORTADA_URL}
+  cola-mascota-reunificada-url: ${SQS_COLA_MASCOTA_REUNIFICADA_URL}
+  # las dos ultimas son opcionales: sin URL ese consumidor queda apagado y el servicio arranca igual
+  cola-chat-aviso-url: ${SQS_COLA_CHAT_AVISO_URL:}
+  cola-mascota-eliminada-url: ${SQS_COLA_MASCOTA_ELIMINADA_URL:}
 
 # sin credenciales reales de Gmail el chequeo de salud del correo siempre
 # falla y deja /actuator/health en DOWN aunque el resto funcione bien

@@ -23,6 +23,7 @@ servicios:
     mascotas: ms-mascotas:8082 # nombre en eureka (puerto explicito: en docker el contenedor no escucha en :80)
     alertas: ms-alertas:8083
     contactos: ms-alertas:8083 # mismo microservicio que alertas
+    ia: ms-ia:8000
     chat: ms-chat:8084 # REST del chat (historial, conversaciones); el WebSocket NO pasa por el bff, ver chat.ws-url
 
 cognito:

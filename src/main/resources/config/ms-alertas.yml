@@ -95,6 +95,7 @@ sqs:
   # las dos ultimas son opcionales: sin URL ese consumidor queda apagado y el servicio arranca igual
   cola-chat-aviso-url: ${SQS_COLA_CHAT_AVISO_URL:}
   cola-mascota-eliminada-url: ${SQS_COLA_MASCOTA_ELIMINADA_URL:}
+  cola-mascota-retirada-url: ${SQS_COLA_MASCOTA_RETIRADA_URL:}
 
 # sin credenciales reales de Gmail el chequeo de salud del correo siempre
 # falla y deja /actuator/health en DOWN aunque el resto funcione bien

@@ -38,6 +38,11 @@ eureka:
 cognito:
   client-id: ${COGNITO_CLIENT_ID}
 
+# Cuotas por usuario (en memoria de una sola instancia): reportes nuevos por dia y URLs de subida de foto por hora
+mascotas:
+  limite-reportes-por-dia: ${MASCOTAS_LIMITE_REPORTES_POR_DIA:10}
+  limite-subidas-por-hora: ${MASCOTAS_LIMITE_SUBIDAS_POR_HORA:30}
+
 # Secreto de servicio que deben mandar ms-alertas y ms-chat a /internal/** (X-Internal-Token, minimo 32 caracteres;
 # sin el, esos endpoints rechazan toda llamada)
 internal:
